@@ -6,20 +6,8 @@
 * [1. Background & Motivation](#1-background--motivation)
   * [1.1 Traditional ASIC Synthesis Bottleneck](#11-traditional-asic-synthesis-bottleneck)
   * [1.2 Proposed Approach: Neural QoR Estimation](#12-proposed-approach-neural-qor-estimation)
-* [2. System Architecture & Pipeline](#2-system-architecture--pipeline)
-  * [2.1 End-to-End Block Diagram](#21-end-to-end-block-diagram)
-  * [2.2 Data Preprocessing & Target Log Transform](#22-data-preprocessing--target-log-transform)
-  * [2.3 Tokenization (Byte-Pair Encoding)](#23-tokenization-byte-pair-encoding)
-  * [2.4 CodeBERT Transformer Backbone](#24-codebert-transformer-backbone)
-  * [2.5 Multi-Target Regression Heads](#25-multi-target-regression-heads)
-* [3. Tools, Frameworks & Hardware Specs](#3-tools-frameworks--hardware-specs)
-* [4. Training Setup & Optimization](#4-training-setup--optimization)
-  * [4.1 Loss Function Formulation](#41-loss-function-formulation)
-  * [4.2 Hyperparameters & Mixed Precision](#42-hyperparameters--mixed-precision)
-* [5. Results & Evaluation](#5-results--evaluation)
-  * [5.1 Metrics (MAPE, R²)](#51-metrics-mape-r)
-  * [5.2 PPA Prediction Performance](#52-ppa-prediction-performance)
-* [6. Limitations & Future Work](#6-limitations--future-work)
+* [2. Data Pipeline & Preprocessing](#2-system-architecture--pipeline)
+  * 
 
 ## 💡 Background & Motivation
 ### 1.1 Traditional ASIC Synthesis Bottleneck
