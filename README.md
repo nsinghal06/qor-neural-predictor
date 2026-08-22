@@ -6,10 +6,10 @@
 * [1. Background & Motivation](#1-background--motivation)
   * [1.1 Traditional ASIC Synthesis Bottleneck](#11-traditional-asic-synthesis-bottleneck)
   * [1.2 Proposed Approach: Neural QoR Estimation](#12-proposed-approach-neural-qor-estimation)
-* [2. Data Pipeline & Preprocessing](#2-system-architecture--pipeline)
-  * 
+* [2. Data Pipeline & Preprocessing](#2-data-pipeline--preprocessing)
+  * [2.1 Dataset]
 
-## 💡 Background & Motivation
+## 💡Background & Motivation
 ### 1.1 Traditional ASIC Synthesis Bottleneck
 In modern computer chip (ASIC) design, hardware engineers write code using hardware description languages like **Verilog** at the Register-Transfer Level (RTL). This code describes the logical flow of data between registers and logic gates. However, raw Verilog text does not tell an engineer the physical cost of the hardware:
 * **Circuit Area ($\mu\text{m}^2$):** How much silicon die area the design occupies.
@@ -32,3 +32,13 @@ During synthesis, Electronic Design Automation (EDA) tools (such as Synopsys Des
 * Input: Raw RTL Verilog code files.
 * Core Model: A fine-tuned microsoft/codebert-base transformer encoder that extracts structural, semantic, and syntactic patterns directly from tokenized HDL.
 * Prediction Head: Multi-target MLP regression heads operating on the sequence embedding to simultaneously predict total circuit area ($\mu\text{m}^2$), critical path delay ($\text{ns}$), and static power ($\text{mW}$).
+
+## 📁Data Pipeline & Preprocessing
+### 2.1 Dataset Extraction
+The dataset is derived from [`scale-lab/MetRex`](https://huggingface.co/datasets/scale-lab/MetRex) on Hugging Face which contains 25.9k Verilog RTL designs with their corresponding post-synthesis QoR ground-truths. 
+* **Filtered Subset:** 15,000 hardware designs meeting the sequence constraint ($\le 512$ tokens).
+* **Cleaning:** Stripped HDL comments, redundant compiler directives, and invalid encoding characters.
+* **Dataset Splits (Fixed Seed):**
+  * **Train:** 12,000 samples (80%)
+  * **Validation:** 1,500 samples (10%)
+  * **Test:** 1,500 samples (10%)
