@@ -18,5 +18,6 @@ During synthesis, Electronic Design Automation (EDA) tools (such as Synopsys Des
 * **Iterative Friction**: Hardware development is highly iterative. If an engineer makes minor tweaks to the Verilog source to fix a bug or optimize performance, they must re-run the entire synthesis flow just to evaluate the physical impact.
 * **Automated Search Limits**: Modern automated techniques, such as Design Space Exploration (DSE), require evaluating thousands of RTL design variations, making full synthesis computationally intractable.
   
-**Proposed Approach: Fast Neural QoR Estimation
-> **Note on Scope: Logic synthesis cannot be replaced entirely. Because synthesis produces the actual gate-level netlist required to manufacture the physical chip, full EDA compilation remains mandatory for final design sign-off and tape-out. In this context, the RTL-2-QOR model serves as a fast proxy model to provide instant feedback during early-stage iteration and architectural exploration. Since ML for EDA is an emerging research frontier, this project investigates whether pre-trained language models can approximate synthesis metrics before launching heavy toolchains.
+**Proposed Approach**: Fast Neural QoR Estimation
+> **Note on Scope: Logic synthesis cannot be replaced entirely as it produces the actual gate-level netlist required to tape-out and manufacture the physical chip. In this context, the RTL-2-QOR model serves as a proxy model to provide instant feedback during early-stage iteration and architectural exploration.
+> Since ML for EDA is an emerging area of research, this project investigates whether pre-trained language models can approximate synthesis metrics before launching heavy toolchains.
