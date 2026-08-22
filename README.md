@@ -51,13 +51,15 @@ To equalize learning across all heads, labels undergo a two-stage transformation
 2. **Z-Score Standardization:** Scaled using training set mean ($\mu_{\text{train}}$) and standard deviation ($\sigma_{\text{train}}$):
    $$z_{\text{true}} = \frac{y_{\text{log}} - \mu_{\text{train}}}{\sigma_{\text{train}}}$$
 
-During evaluation and inference, the network's standardized output ($\hat{z}_{\text{pred}}$) is restored to physical SI units using the inverse functions ($\text{expm1}$):
-$$\hat{y}_{\text{log}} = (\hat{z}_{\text{pred}} \cdot \sigma_{\text{train}}) + \mu_{\text{train}}$$
-$$\hat{y}_{\text{real}} = \exp(\hat{y}_{\text{log}}) - 1$$
+During evaluation and inference, the network's standardized output ($\hat{z}$) is restored to physical engineering units via the inverse functions:
 
----
+$$\hat{y}_{\text{log}} = (\hat{z} \cdot \sigma_{\text{train}}) + \mu_{\text{train}}$$
 
-| Metric | Raw Target ($y_{\text{real}}$) | Log1p Target ($\ln(1 + y)$) | Target Z-Score ($z_{\text{true}}$) | Model Output ($\hat{z}_{\text{pred}}$) | Un-standardized ($\hat{y}_{\text{log}}$) | Final Predicted ($\hat{y}_{\text{real}}$) |
+$$\hat{y}_{\text{final}} = \exp(\hat{y}_{\text{log}}) - 1$$
+
+#### End-to-End Metric Walkthrough Example
+
+| Metric | Raw Label ($y$) | Log Scale ($\ln(1 + y)$) | Train Z-Score ($z$) | Model Output ($\hat{z}$) | Restored Log ($\hat{y}_{\text{log}}$) | Final Prediction ($\hat{y}_{\text{final}}$) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Area ($\mu\text{m}^2$)** | $500.00$ | $6.22$ | $-0.31$ | $-0.28$ | $6.28$ | **$532.78$** |
 | **Delay ($\text{ns}$)** | $0.50$ | $0.41$ | $-0.43$ | $-0.40$ | $0.43$ | **$0.54$** |
