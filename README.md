@@ -53,19 +53,10 @@ To equalize learning across all heads, labels undergo a two-stage transformation
 
 During evaluation and inference, the network's standardized output ($\hat{z}$) is restored to physical engineering units via the inverse functions:
 
-$$\hat{y}_{\text{log}} = (\hat{z} \cdot \sigma_{\text{train}}) + \mu_{\text{train}}$$
-
-$$\hat{y}_{\text{final}} = \exp(\hat{y}_{\text{log}}) - 1$$
-
-#### Metric Conversions Example
-| Metric | Raw Label ($y$) | Log Scale ($\ln(1+y)$) | Train Z-Score ($z$) | Model Output ($\hat{z}$) | Restored Log ($\hat{y}_{\text{log}}$) | Final Prediction ($\hat{y}_{\text{final}}$) |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Area&nbsp;($\mu\text{m}^2$)** | 500.00 | 6.22 | −0.31 | −0.28 | 6.28 | 532.78 |
-| **Delay&nbsp;($\text{ns}$)** | 0.50 | 0.41 | −0.43 | −0.40 | 0.43 | 0.54 |
-| **Power&nbsp;($\mu\text{W}$)** | 15,000.00 | 9.62 | +0.96 | +0.91 | 9.51 | 13,493.42 |
+$$\hat{y}_{\text{log}} = (\hat{z} \cdot \sigma_{\text{train}}) + \mu_{\text{train}}$$ $$\hat{y}_{\text{final}} = \exp(\hat{y}_{\text{log}}) - 1$$
 
 ### Metric Conversions Example
-| Metric | Raw Target | Log Target | Train Z-Score | Model Output | Restored Log | Final Prediction |
+| Metric | Raw Label<br>($y_{\text{real}}$) | Log Target<br>($\ln(1 + y)$) | Train Z-Score<br>($z_{\text{true}}$) | Model Output<br>($\hat{z}_{\text{pred}}$) | Restored Log<br>($\hat{y}_{\text{log}}$) | Final Predicted<br>($\hat{y}_{\text{real}}$) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Area&nbsp;($\mu\text{m}^2$)** | 500.00 | 6.22 | −0.31 | −0.28 | 6.28 | 532.78 |
 | **Delay&nbsp;($\text{ns}$)** | 0.50 | 0.41 | −0.43 | −0.40 | 0.43 | 0.54 |
