@@ -21,7 +21,7 @@ During synthesis, Electronic Design Automation (EDA) tools (such as Synopsys Des
 ### Proposed Approach: Fast Neural QoR Estimation
 > Note on Scope: Logic synthesis cannot be replaced entirely as it produces the actual gate-level netlist required to tape-out and manufacture the physical chip. In this context, the RTL-2-QOR model serves as a proxy model to provide instant feedback during early-stage iteration and architectural exploration.
 > Since ML for EDA is an emerging area of research, this project investigates whether pre-trained language models can approximate synthesis metrics before launching heavy toolchains.
-* Goal: Provides instant, pre-synthesis Quality of Results (QoR) estimation to bypass slow, compute-heavy EDA logic synthesis during early design exploration.
-* Input: Raw Register-Transfer Level (RTL) Verilog code files.
+* Goal: Provides post-synthesis QoR estimation to bypass slow, compute-heavy EDA logic synthesis during early design exploration.
+* Input: Raw RTL Verilog code files.
 * Core Model: A fine-tuned microsoft/codebert-base transformer encoder that extracts structural, semantic, and syntactic patterns directly from tokenized HDL.
 * Prediction Head: Multi-target MLP regression heads operating on the sequence embedding to simultaneously predict total circuit area ($\mu\text{m}^2$), critical path delay ($\text{ns}$), and static power ($\text{mW}$).
