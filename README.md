@@ -57,7 +57,7 @@ $$\hat{y}_{\text{log}} = (\hat{z} \cdot \sigma_{\text{train}}) + \mu_{\text{trai
 
 $$\hat{y}_{\text{final}} = \exp(\hat{y}_{\text{log}}) - 1$$
 
-#### End-to-End Metric Walkthrough Example
+#### Metric Conversions Example
 
 | Metric | Raw Label ($y$) | Log Scale ($\ln(1 + y)$) | Train Z-Score ($z$) | Model Output ($\hat{z}$) | Restored Log ($\hat{y}_{\text{log}}$) | Final Prediction ($\hat{y}_{\text{final}}$) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
