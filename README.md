@@ -9,11 +9,11 @@ In modern computer chip (ASIC) design, hardware engineers write code using hardw
 * **Critical Path Delay ($\text{ns}$):** The slowest signal propagation delay, dictating maximum clock frequency.
 * **Static Power ($\text{mW}$):** Baseline power leakage and energy consumption.
 
-Collectively referred to as **Quality of Results (QoR)** or **PPA (Power, Performance, Area)**, these metrics traditionally require passing the RTL through a process called **Logic Synthesis**:
+Collectively referred to as **Quality of Results (QoR)** or **PPA (Power, Performance, Area)**, these metrics traditionally require passing the RTL through a process called **Logic Synthesis**.
 
 During synthesis, Electronic Design Automation (EDA) tools (such as Synopsys Design Compiler or open-source Yosys) parse the RTL, optimize the logic, and map every behavioral statement into a gate-level netlist made up of actual silicon standard cells (e.g., NAND, NOR, D-Flip-Flops), followed by Static Timing Analysis (STA).
 
-* **The Problem:**Logic synthesis is a major computational bottleneck in digital design.
+**The Problem**: Logic synthesis is a major computational bottleneck in digital design.
 * **High Latency**: Running synthesis tools can take anywhere from tens of minutes to multiple hours for medium-to-large hardware blocks.
 * **Iterative Friction**: Hardware development is highly iterative. If an engineer makes minor tweaks to the Verilog source to fix a bug or optimize performance, they must re-run the entire synthesis flow just to evaluate the physical impact.
 * **Automated Search Limits**: Modern automated techniques, such as Design Space Exploration (DSE), require evaluating thousands of RTL design variations, making full synthesis computationally intractable.
