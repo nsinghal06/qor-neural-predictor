@@ -55,6 +55,8 @@ During evaluation and inference, the network's standardized output ($\hat{z}_{\t
 $$\hat{y}_{\text{log}} = (\hat{z}_{\text{pred}} \cdot \sigma_{\text{train}}) + \mu_{\text{train}}$$
 $$\hat{y}_{\text{real}} = \exp(\hat{y}_{\text{log}}) - 1$$
 
+---
+
 | Metric | Raw Target ($y_{\text{real}}$) | Log1p Target ($\ln(1 + y)$) | Target Z-Score ($z_{\text{true}}$) | Model Output ($\hat{z}_{\text{pred}}$) | Un-standardized ($\hat{y}_{\text{log}}$) | Final Predicted ($\hat{y}_{\text{real}}$) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Area ($\mu\text{m}^2$)** | $500.00$ | $6.22$ | $-0.31$ | $-0.28$ | $6.28$ | **$532.78$** |
