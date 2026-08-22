@@ -42,3 +42,21 @@ The dataset is derived from [`scale-lab/MetRex`](https://huggingface.co/datasets
   * **Train:** 12,000 samples (80%)
   * **Validation:** 1,500 samples (10%)
   * **Test:** 1,500 samples (10%)
+ 
+### 2.2 Target Normalization
+The raw QoR metrics span vastly different physical magnitudes (e.g., Delay $\sim 10^{-1}\,\text{ns}$ vs. Power $\sim 10^4\,\mu\text{W}$). Training on unnormalized targets causes high-magnitude metrics to dominate loss gradients.
+To equalize learning across all heads, labels undergo a two-stage transformation during batch loading:
+1. **Natural Log Transform:** Compresses the exponential dynamic range:
+   $$y_{\text{log}} = \ln(1 + y_{\text{real}})$$
+2. **Z-Score Standardization:** Scaled using training set mean ($\mu_{\text{train}}$) and standard deviation ($\sigma_{\text{train}}$):
+   $$z_{\text{true}} = \frac{y_{\text{log}} - \mu_{\text{train}}}{\sigma_{\text{train}}}$$
+
+During evaluation and inference, the network's standardized output ($\hat{z}_{\text{pred}}$) is restored to physical SI units using the inverse functions ($\text{expm1}$):
+$$\hat{y}_{\text{log}} = (\hat{z}_{\text{pred}} \cdot \sigma_{\text{train}}) + \mu_{\text{train}}$$
+$$\hat{y}_{\text{real}} = \exp(\hat{y}_{\text{log}}) - 1$$
+
+| Metric | Raw Target ($y_{\text{real}}$) | Log1p Target ($\ln(1 + y)$) | Target Z-Score ($z_{\text{true}}$) | Model Output ($\hat{z}_{\text{pred}}$) | Un-standardized ($\hat{y}_{\text{log}}$) | Final Predicted ($\hat{y}_{\text{real}}$) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Area ($\mu\text{m}^2$)** | $500.00$ | $6.22$ | $-0.31$ | $-0.28$ | $6.28$ | **$532.78$** |
+| **Delay ($\text{ns}$)** | $0.50$ | $0.41$ | $-0.43$ | $-0.40$ | $0.43$ | **$0.54$** |
+| **Power ($\mu\text{W}$)** | $15,000.00$ | $9.62$ | $+0.96$ | $+0.91$ | $9.51$ | **$13,493.42$** |
