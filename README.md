@@ -63,3 +63,10 @@ $$\hat{y}_{\text{final}} = \exp(\hat{y}_{\text{log}}) - 1$$
 | **Area&nbsp;($\mu\text{m}^2$)** | 500.00 | 6.22 | −0.31 | −0.28 | 6.28 | 532.78 |
 | **Delay&nbsp;($\text{ns}$)** | 0.50 | 0.41 | −0.43 | −0.40 | 0.43 | 0.54 |
 | **Power&nbsp;($\mu\text{W}$)** | 15,000.00 | 9.62 | +0.96 | +0.91 | 9.51 | 13,493.42 |
+
+### Metric Conversions Example
+| Metric | Raw Target | Log Target | Train Z-Score | Model Output | Restored Log | Final Prediction |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Area&nbsp;($\mu\text{m}^2$)** | 500.00 | 6.22 | −0.31 | −0.28 | 6.28 | 532.78 |
+| **Delay&nbsp;($\text{ns}$)** | 0.50 | 0.41 | −0.43 | −0.40 | 0.43 | 0.54 |
+| **Power&nbsp;($\mu\text{W}$)** | 15,000.00 | 9.62 | +0.96 | +0.91 | 9.51 | 13,493.42 |
