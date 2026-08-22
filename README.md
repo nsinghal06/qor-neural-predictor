@@ -58,9 +58,8 @@ $$\hat{y}_{\text{log}} = (\hat{z} \cdot \sigma_{\text{train}}) + \mu_{\text{trai
 $$\hat{y}_{\text{final}} = \exp(\hat{y}_{\text{log}}) - 1$$
 
 #### Metric Conversions Example
-
-| Metric | Raw Label ($y$) | Log Scale ($\ln(1 + y)$) | Train Z-Score ($z$) | Model Output ($\hat{z}$) | Restored Log ($\hat{y}_{\text{log}}$) | Final Prediction ($\hat{y}_{\text{final}}$) |
+| Metric | Raw Label ($y$) | Log Scale ($\ln(1+y)$) | Train Z-Score ($z$) | Model Output ($\hat{z}$) | Restored Log ($\hat{y}_{\text{log}}$) | Final Prediction ($\hat{y}_{\text{final}}$) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Area ($\mu\text{m}^2$)** | $500.00$ | $6.22$ | $-0.31$ | $-0.28$ | $6.28$ | **$532.78$** |
-| **Delay ($\text{ns}$)** | $0.50$ | $0.41$ | $-0.43$ | $-0.40$ | $0.43$ | **$0.54$** |
-| **Power ($\mu\text{W}$)** | $15,000.00$ | $9.62$ | $+0.96$ | $+0.91$ | $9.51$ | **$13,493.42$** |
+| **Area&nbsp;($\mu\text{m}^2$)** | 500.00 | 6.22 | −0.31 | −0.28 | 6.28 | 532.78 |
+| **Delay&nbsp;($\text{ns}$)** | 0.50 | 0.41 | −0.43 | −0.40 | 0.43 | 0.54 |
+| **Power&nbsp;($\mu\text{W}$)** | 15,000.00 | 9.62 | +0.96 | +0.91 | 9.51 | 13,493.42 |
