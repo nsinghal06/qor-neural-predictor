@@ -33,9 +33,9 @@ Collectively referred to as **Quality of Results (QoR)** or **PPA (Power, Perfor
 During synthesis, Electronic Design Automation (EDA) tools (such as Synopsys Design Compiler or open-source Yosys) parse the RTL, optimize the logic, and map every behavioral statement into a gate-level netlist made up of actual silicon standard cells (e.g., NAND, NOR, D-Flip-Flops), followed by Static Timing Analysis (STA).
 
 ### The Problem: Logic synthesis is a major computational bottleneck in digital design
-* **High Latency**: Running synthesis tools can take anywhere from tens of minutes to multiple hours for medium-to-large hardware blocks.
-* **Iterative Friction**: Hardware development is highly iterative. If an engineer makes minor tweaks to the Verilog source to fix a bug or optimize performance, they must re-run the entire synthesis flow just to evaluate the physical impact.
-* **Automated Search Limits**: Modern automated techniques, such as Design Space Exploration (DSE), require evaluating thousands of RTL design variations, making full synthesis computationally intractable.
+* High Latency: Running synthesis tools can take anywhere from tens of minutes to multiple hours for medium-to-large hardware blocks.
+* Iterative Friction: Hardware development is highly iterative. If an engineer makes minor tweaks to the Verilog source to fix a bug or optimize performance, they must re-run the entire synthesis flow just to evaluate the physical impact.
+* Automated Search Limits: Modern automated techniques, such as Design Space Exploration (DSE), require evaluating thousands of RTL design variations, making full synthesis computationally intractable.
   
 ### 1.2 Proposed Approach: Fast Neural QoR Estimation
 > Note on Scope: Logic synthesis cannot be replaced entirely as it produces the actual gate-level netlist required to tape-out and manufacture the physical chip. In this context, the RTL-2-QOR model serves as a proxy model to provide instant feedback during early-stage iteration and architectural exploration.
