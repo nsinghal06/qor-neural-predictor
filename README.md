@@ -1,7 +1,5 @@
 # RTL-2-QOR
 
-> **Skip synthesis. Predict ASIC area, delay, and power straight from Verilog with CodeBERT.**
-
 **RTL-2-QOR** is a deep learning regression framework designed to estimate downstream ASIC **Quality of Results (QoR)** metrics- specifically **Total Circuit Area ($\mu\text{m}^2$)**, **Critical Path Delay ($\text{ns}$)**, and **Static Power ($\text{mW}$)**- directly from raw RTL Verilog code. 
 
 ## 💡 Background & Motivation
