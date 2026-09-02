@@ -33,7 +33,7 @@ During synthesis, Electronic Design Automation (EDA) tools (such as Synopsys Des
 * Core Model: A fine-tuned microsoft/codebert-base transformer encoder that extracts structural, semantic, and syntactic patterns directly from tokenized HDL.
 * Prediction Head: Multi-target MLP regression heads operating on the sequence embedding to simultaneously predict total circuit area ($\mu\text{m}^2$), critical path delay ($\text{ns}$), and static power ($\text{mW}$).
 
-## 📁 2. Data Pipeline & Preprocessing
+## 📁 2. Dataset & Preprocessing
 ### 2.1 Dataset Extraction
 The dataset is derived from [`scale-lab/MetRex`](https://huggingface.co/datasets/scale-lab/MetRex) on Hugging Face which contains 25.9k Verilog RTL designs with their corresponding post-synthesis QoR ground-truths. 
 * **Filtered Subset:** 15,000 hardware designs meeting the sequence constraint ($\le 512$ tokens).
@@ -61,3 +61,22 @@ $$\hat{y}_{\text{log}} = (\hat{z} \cdot \sigma_{\text{train}}) + \mu_{\text{trai
 | **Area&nbsp;($\mu\text{m}^2$)** | 500.00 | 6.22 | −0.31 | −0.28 | 6.28 | 532.78 |
 | **Delay&nbsp;($\text{ns}$)** | 0.50 | 0.41 | −0.43 | −0.40 | 0.43 | 0.54 |
 | **Power&nbsp;($\mu\text{W}$)** | 15,000.00 | 9.62 | +0.96 | +0.91 | 9.51 | 13,493.42 |
+
+## 3. Model Architecture
+<img width="874" height="380" alt="image" src="https://github.com/user-attachments/assets/dd51e364-1658-4cc5-85b9-5b6b3d9c75bd" />
+The proposed architecture is a multi-head regression transformer and consists of 3 core components:
+1. Tokenization: Samples are tokenized using CodeBERT’s byte-pair encoding to a fixed length
+of 512 tokens. This yields token IDs (∈ RB×512) and a mask (∈ RB×512). Tokens are mapped
+through a 768-dimensional token lookup table and added element-wise to a 768-dimensional position
+embedding (positions 0–511), forming initial tensor X ∈ RB×512×768.
+2. Pre-trained CodeBERT Transformer: Tensor X passes through the transformer encoder (12
+layers, 12 attention heads) to generate contextual embeddings H ∈ RB×512×768. Sequence pooling
+extracts the global summary vector at index 0 (hcls∈ RB×768).
+3. 3 Multi-head MLP predictors: Vector hCLS branches into 3 independent MLP heads to predict all
+targets simultaneously while preventing cross-target gradient interference. Isolating the heads ensures
+that loss gradients from one metric do not affect the parameters responsible for predicting the other
+two targets. Each head uses an identical architecture which is further depicted in Block 6.
+Outputs from the heads are concatenated into the final standardized log-space QoR prediction vector.
+
+## 4. Training Configuration & Hyperparameters
+## 5. Results & Evaluation
