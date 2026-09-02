@@ -93,7 +93,9 @@ The architecture adapts `microsoft/codebert-base` into a multi-target regression
 \hat{z}_{pred} = [\hat{z}_{area}, \hat{z}_{delay}, \hat{z}_{power}] \in \mathbb{R}^{B \times 3}
 ```
    * **Target Recovery:** Each standardized scalar is un-scaled through the inverse pipeline to yield final physical units:
-     $$\hat{y}_{\text{pred}} = \exp\big((\hat{z}_{\text{pred}} \cdot \sigma_{\text{train}}) + \mu_{\text{train}}\big) - 1$$
+```math
+\hat{y}_{pred} = \exp((\hat{z}_{pred} \cdot \sigma_{train}) + \mu_{train}) - 1
+```
      
 ## 4. Training Configuration & Hyperparameters
 ## 5. Results & Evaluation
