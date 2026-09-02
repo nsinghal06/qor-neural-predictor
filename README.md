@@ -98,4 +98,33 @@ The architecture adapts `microsoft/codebert-base` into a multi-target regression
 ```
      
 ## 4. Training Configuration & Hyperparameters
+Training was conducted in PyTorch using cloud-hosted NVIDIA T4 GPUs (16 GB VRAM) on Kaggle. The pipeline optimizes multi-target loss stability, memory throughput, and gradient flow across the 12-layer transformer encoder and dedicated MLP heads.
+
+### 4.1 Multi-Task Loss Formulation
+Because hardware metrics span vastly different numerical ranges in standard scale, regression is performed entirely on standardized log-transformed targets. To mitigate the impact of residual outliers, the model is trained using **Smooth L1 (Huber) Loss** ($\beta = 1.0$):
+
+$$\mathcal{L}_{\text{Smooth L1}}(z, \hat{z}) = \begin{cases} 0.5 (z - \hat{z})^2 & \text{if } |z - \hat{z}| < 1 \\ |z - \hat{z}| - 0.5 & \text{otherwise} \end{cases}$$
+
+The total training objective is computed as the unweighted composite sum across all three regression heads:
+
+$$\mathcal{L}_{\text{total}} = \mathcal{L}_{\text{area}} + \mathcal{L}_{\text{delay}} + \mathcal{L}_{\text{power}}$$
+
+### 4.2 Training Dynamics & Hardware Acceleration
+* **Automatic Mixed Precision (AMP):** Utilized `torch.cuda.amp` to perform transformer matrix multiplications and activations in `FP16`, cutting peak VRAM utilization by $\sim 50\%$ and maximizing Tensor Core throughput while keeping critical weight accumulations in `FP32`.
+* **Optimization & Regularization:** Fine-tuned using `AdamW` ($\beta_1=0.9, \beta_2=0.999$, weight decay $= 0.01$) to decouple weight decay from gradient updates.
+* **Learning Rate Scheduling:** Managed via `ReduceLROnPlateau` monitoring validation Smooth L1 loss (decay factor $\gamma = 0.5$, patience $= 2$ epochs) to prevent oscillations as the model approached convergence.
+
+### 4.3 Hyperparameter Summary
+
+| Hyperparameter | Configuration | Rationale |
+| :--- | :--- | :--- |
+| **Model Backbone** | `microsoft/codebert-base` | 125M parameter pre-trained code representation model |
+| **Batch Size** | 16 | Maximizes GPU memory saturation on 16 GB NVIDIA T4 |
+| **Peak Learning Rate** | $3 \times 10^{-5}$ | Conservative fine-tuning rate to avoid catastrophic forgetting |
+| **LR Scheduler** | `ReduceLROnPlateau` | Dynamically steps down LR when validation loss flattens |
+| **Loss Function** | Smooth L1 (Huber) | Quadratic near zero for precision; linear at tails for outlier robustness |
+| **Optimizer** | `AdamW` | Decoupled weight decay ($0.01$) for transformer stability |
+| **Precision** | FP16 / FP32 (AMP) | `torch.cuda.amp` for memory reduction and Tensor Core compute |
+| **Epochs** | 20 | Early-stopping monitored against validation loss |
+
 ## 5. Results & Evaluation
