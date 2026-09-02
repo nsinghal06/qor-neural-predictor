@@ -2,12 +2,6 @@
 
 **RTL-2-QOR** is a deep learning regression framework designed to estimate downstream ASIC **Quality of Results (QoR)** metrics- specifically **Total Circuit Area ($\mu\text{m}^2$)**, **Critical Path Delay ($\text{ns}$)**, and **Static Power ($\text{mW}$)**- directly from raw RTL Verilog code. 
 
-## Table of Contents
-* [1. Background & Motivation](#1-background--motivation)
-  * [1.1 Traditional ASIC Synthesis Bottleneck](#11-traditional-asic-synthesis-bottleneck)
-  * [1.2 Proposed Approach: Neural QoR Estimation](#12-proposed-approach-neural-qor-estimation)
-* [2. Data Pipeline & Preprocessing](#2-data-pipeline--preprocessing)
-  * [2.1 Dataset]
 
 ## 💡1. Background & Motivation
 ### 1.1 Traditional ASIC Synthesis Bottleneck
@@ -138,7 +132,6 @@ The model was evaluated on a held-out test split of 1,500 unseen Verilog designs
 | **Delay&nbsp;($\text{ns}$)** | 0.0514 | **0.8701** | $1.04 \times 10^9\%$ | **25.12%** |
 | **Power&nbsp;($\mu\text{W}$)** | 0.1910 | **0.9022** | $3.67 \times 10^8\%$ | **27.23%** |
 
----
 
 ### 5.2 Training Convergence & Loss Dynamics
 <img width="744" height="419" alt="image" src="https://github.com/user-attachments/assets/8dc1843b-1769-45cc-8c27-e7677f2e93b7" />
@@ -146,8 +139,8 @@ The model was evaluated on a held-out test split of 1,500 unseen Verilog designs
 
 * **Stable Convergence:** The Smooth L1 loss curve exhibits rapid convergence within the first 5 epochs, dropping from an initial validation loss of $\sim 0.16$ to $< 0.05$.
 * **Minimal Overfitting:** Validation loss closely tracks the training loss throughout all 20 epochs, plateauing around epoch 13 without divergence, confirming effective regularization via dropout ($p=0.1$) and decoupled weight decay ($0.01$).
+<img width="735" height="112" alt="image" src="https://github.com/user-attachments/assets/a8fa5898-ea22-4c6a-9801-119c31f5e177" />
 
----
 
 ### 5.3 Test Set Parity Analysis
 <img width="856" height="466" alt="image" src="https://github.com/user-attachments/assets/0a3a5c3a-9564-4a3e-8036-b86bc3a7309b" />
@@ -155,3 +148,9 @@ The model was evaluated on a held-out test split of 1,500 unseen Verilog designs
 * **Baseline Limitations (Top Row):** Naive feature counts fail to capture non-linear logic synthesis effects, resulting in horizontal scatter clusters with near-zero correlation ($\text{Log } R^2 \le 0.191$) and catastrophic Med-APE ($> 10^8\%$) caused by near-zero ground truth values.
 * **Transformer Alignment (Bottom Row):** Predictions cluster tightly along the ideal diagonal ($y = x$) across multiple orders of magnitude ($\text{Log } R^2 \ge 0.870$), demonstrating that multi-head self-attention effectively extracts structural datapath hierarchies directly from raw RTL syntax.
 * **Physical Coupling:** Power predictions closely mirror the area distribution, confirming that the transformer encoder independently learned the physical relationship between silicon area and leakage power without explicit rule injection.
+
+## 6. Summary & Key Takeaways
+* **Direct RTL-to-QoR Mapping:** Successfully demonstrated that a pre-trained transformer (`CodeBERT`) can directly learn the non-linear transformations of logic synthesis from raw Verilog HDL, bypassing traditional hand-engineered AST or graph features.
+* **Strong Predictive Accuracy:** Achieved $\text{Log } R^2 \ge 0.87$ across all targets ($R^2 > 0.90$ for area and power) and maintained median estimation errors under $28\%$ ($\text{Med-APE} = 22.57\%\text{--}27.23\%$) across designs spanning multiple orders of magnitude.
+* **Learned Physical Coupling:** Without manual rule-based programming, the self-attention heads inherently captured real silicon physics—notably the direct relationship between active cell area and static leakage power.
+* **Rapid Design Space Exploration:** Addition to traditional multi-hour logic synthesis runs with sub-second, millisecond-level inference, enabling fast architectural feedback and high-throughput optimization during early design phases.
