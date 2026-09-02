@@ -128,3 +128,30 @@ $$\mathcal{L}_{\text{total}} = \mathcal{L}_{\text{area}} + \mathcal{L}_{\text{de
 | **Epochs** | 20 | Early-stopping monitored against validation loss |
 
 ## 5. Results & Evaluation
+The model was evaluated on a held-out test split of 1,500 unseen Verilog designs to assess predictive correlation and relative error against a feature-count baseline.
+
+### 5.1 Quantitative Performance Comparison
+
+| Target Metric | Baseline<br>$\text{Log } R^2$ | Transformer<br>$\text{Log } R^2$ | Baseline<br>Med-APE (%) | Transformer<br>Med-APE (%) |
+| :--- | :---: | :---: | :---: | :---: |
+| **Area&nbsp;($\mu\text{m}^2$)** | 0.1817 | **0.9052** | $3.98 \times 10^8\%$ | **22.57%** |
+| **Delay&nbsp;($\text{ns}$)** | 0.0514 | **0.8701** | $1.04 \times 10^9\%$ | **25.12%** |
+| **Power&nbsp;($\mu\text{W}$)** | 0.1910 | **0.9022** | $3.67 \times 10^8\%$ | **27.23%** |
+
+---
+
+### 5.2 Training Convergence & Loss Dynamics
+<img width="744" height="419" alt="image" src="https://github.com/user-attachments/assets/8dc1843b-1769-45cc-8c27-e7677f2e93b7" />
+
+
+* **Stable Convergence:** The Smooth L1 loss curve exhibits rapid convergence within the first 5 epochs, dropping from an initial validation loss of $\sim 0.16$ to $< 0.05$.
+* **Minimal Overfitting:** Validation loss closely tracks the training loss throughout all 20 epochs, plateauing around epoch 13 without divergence, confirming effective regularization via dropout ($p=0.1$) and decoupled weight decay ($0.01$).
+
+---
+
+### 5.3 Test Set Parity Analysis
+<img width="856" height="466" alt="image" src="https://github.com/user-attachments/assets/0a3a5c3a-9564-4a3e-8036-b86bc3a7309b" />
+
+* **Baseline Limitations (Top Row):** Naive feature counts fail to capture non-linear logic synthesis effects, resulting in horizontal scatter clusters with near-zero correlation ($\text{Log } R^2 \le 0.191$) and catastrophic Med-APE ($> 10^8\%$) caused by near-zero ground truth values.
+* **Transformer Alignment (Bottom Row):** Predictions cluster tightly along the ideal diagonal ($y = x$) across multiple orders of magnitude ($\text{Log } R^2 \ge 0.870$), demonstrating that multi-head self-attention effectively extracts structural datapath hierarchies directly from raw RTL syntax.
+* **Physical Coupling:** Power predictions closely mirror the area distribution, confirming that the transformer encoder independently learned the physical relationship between silicon area and leakage power without explicit rule injection.
