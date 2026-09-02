@@ -74,20 +74,25 @@ The architecture adapts `microsoft/codebert-base` into a multi-target regression
      * **Attention Masks:** $M \in \mathbb{R}^{B \times 512}$ (where $1$ denotes a code token and $0$ denotes padding)
    * **Embedding Lookup & Fusion:** Token IDs are mapped through a $768$-dimensional lookup table and added element-wise to learned $768$-dimensional positional embeddings (positions $0\text{–}511$), producing the initial encoder tensor:
      $$X \in \mathbb{R}^{B \times 512 \times 768}$$
-2.
-The proposed architecture is a multi-head regression transformer and consists of 3 core components:
-1. Tokenization: Samples are tokenized using CodeBERT’s byte-pair encoding to a fixed length
-of 512 tokens. This yields token IDs (∈ RB×512) and a mask (∈ RB×512). Tokens are mapped
-through a 768-dimensional token lookup table and added element-wise to a 768-dimensional position
-embedding (positions 0–511), forming initial tensor X ∈ RB×512×768.
-2. Pre-trained CodeBERT Transformer: Tensor X passes through the transformer encoder (12
-layers, 12 attention heads) to generate contextual embeddings H ∈ RB×512×768. Sequence pooling
-extracts the global summary vector at index 0 (hcls∈ RB×768).
-3. 3 Multi-head MLP predictors: Vector hCLS branches into 3 independent MLP heads to predict all
-targets simultaneously while preventing cross-target gradient interference. Isolating the heads ensures
-that loss gradients from one metric do not affect the parameters responsible for predicting the other
-two targets. Each head uses an identical architecture which is further depicted in Block 6.
-Outputs from the heads are concatenated into the final standardized log-space QoR prediction vector.
+     
+2. **Pre-trained CodeBERT Transformer Encoder:**
+   * **Bidirectional Attention:** The initial input tensor $X \in \mathbb{R}^{B \times 512 \times 768}$ passes through the 12-layer transformer backbone (12 attention heads per layer) to compute contextualized token interactions, generating the latent representation tensor:
+     $$H \in \mathbb{R}^{B \times 512 \times 768}$$
+   * **Hierarchical Representation:**
+     * **Layers 1–4:** Capture lexical tokens and local surface syntax.
+     * **Layers 5–8:** Model intermediate syntactic relationships and circuit structural dependencies.
+     * **Layers 9–12:** Encode high-level architectural semantics, datapath topologies, and control-flow logic.
+   * **Sequence Pooling:** The contextual embedding corresponding to the leading `[CLS]` token (index $0$) is isolated as the global summary vector for the entire RTL module:
+     $$h_{\text{CLS}} \in \mathbb{R}^{B \times 768}$$
+     
+3. **Multi-Head MLP Predictors & Output Reconstruction:**
+   * **Gradient Isolation:** The global summary vector $h_{\text{CLS}} \in \mathbb{R}^{B \times 768}$ branches into three independent, task-specific MLP regression heads. Decoupling the heads ensures that loss gradients from one metric (e.g., Power) do not cause negative transfer or destabilize the weights dedicated to predicting the other targets (Area, Delay).
+   * **Head Architecture:** Each metric predictor employs an identical 3-layer feed-forward network with GELU activations and regularization:
+     $$\text{Linear}(768 \rightarrow 256) \rightarrow \text{GELU} \rightarrow \text{Dropout}(p = 0.1) \rightarrow \text{Linear}(256 \rightarrow 128) \rightarrow \text{GELU} \rightarrow \text{Linear}(128 \rightarrow 1)$$
+   * **Output Fusion:** Outputs from the three individual heads are concatenated to form the standardized log-space QoR prediction vector:
+     $$\hat{z}_{\text{pred}} = \big[\hat{z}_{\text{area}},\, \hat{z}_{\text{delay}},\, \hat{z}_{\text{power}}\big] \in \mathbb{R}^{B \times 3}$$
+   * **Target Recovery:** Each standardized scalar is un-scaled through the inverse pipeline to yield final physical units:
+     $$\hat{y}_{\text{pred}} = \exp\big((\hat{z}_{\text{pred}} \cdot \sigma_{\text{train}}) + \mu_{\text{train}}\big) - 1$$
 
 ## 4. Training Configuration & Hyperparameters
 ## 5. Results & Evaluation
