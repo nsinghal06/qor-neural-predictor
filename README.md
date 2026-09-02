@@ -64,6 +64,17 @@ $$\hat{y}_{\text{log}} = (\hat{z} \cdot \sigma_{\text{train}}) + \mu_{\text{trai
 
 ## 3. Model Architecture
 <img width="874" height="380" alt="image" src="https://github.com/user-attachments/assets/dd51e364-1658-4cc5-85b9-5b6b3d9c75bd" />
+
+The architecture adapts `microsoft/codebert-base` into a multi-target regression pipeline. Raw Verilog RTL is tokenized, contextualized through a 12-layer transformer backbone, and mapped to physical metrics via dedicated prediction heads.
+
+1. **Tokenization & Input Embeddings:**
+   * **Byte-Pair Encoding (BPE):** Raw Verilog modules are tokenized using CodeBERT's BPE tokenizer to a fixed maximum sequence length of $512$ tokens, padding shorter sequences with `<PAD>` tokens and truncating longer ones.
+   * **Tensor Outputs:** Tokenization produces two input tensors:
+     * **Input Token IDs:** $I \in \mathbb{R}^{B \times 512}$
+     * **Attention Masks:** $M \in \mathbb{R}^{B \times 512}$ (where $1$ denotes a code token and $0$ denotes padding)
+   * **Embedding Lookup & Fusion:** Token IDs are mapped through a $768$-dimensional lookup table and added element-wise to learned $768$-dimensional positional embeddings (positions $0\text{–}511$), producing the initial encoder tensor:
+     $$X \in \mathbb{R}^{B \times 512 \times 768}$$
+2.
 The proposed architecture is a multi-head regression transformer and consists of 3 core components:
 1. Tokenization: Samples are tokenized using CodeBERT’s byte-pair encoding to a fixed length
 of 512 tokens. This yields token IDs (∈ RB×512) and a mask (∈ RB×512). Tokens are mapped
