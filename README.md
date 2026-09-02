@@ -84,15 +84,14 @@ The architecture adapts `microsoft/codebert-base` into a multi-target regression
      * **Layers 9–12:** Encode high-level architectural semantics, datapath topologies, and control-flow logic.
    * **Sequence Pooling:** The contextual embedding corresponding to the leading `[CLS]` token (index $0$) is isolated as the global summary vector for the entire RTL module:
      $$h_{\text{CLS}} \in \mathbb{R}^{B \times 768}$$
-     
 3. **Multi-Head MLP Predictors & Output Reconstruction:**
    * **Gradient Isolation:** The global summary vector $h_{\text{CLS}} \in \mathbb{R}^{B \times 768}$ branches into three independent, task-specific MLP regression heads. Decoupling the heads ensures that loss gradients from one metric (e.g., Power) do not cause negative transfer or destabilize the weights dedicated to predicting the other targets (Area, Delay).
    * **Head Architecture:** Each metric predictor employs an identical 3-layer feed-forward network with GELU activations and regularization:
      $$\text{Linear}(768 \rightarrow 256) \rightarrow \text{GELU} \rightarrow \text{Dropout}(p = 0.1) \rightarrow \text{Linear}(256 \rightarrow 128) \rightarrow \text{GELU} \rightarrow \text{Linear}(128 \rightarrow 1)$$
    * **Output Fusion:** Outputs from the three individual heads are concatenated to form the standardized log-space QoR prediction vector:
-     $$_\hat{z}_{\text{pred}} = \big[\hat{z}_{\text{area}},\, \hat{z}_{\text{delay}},\, \hat{z}_{\text{power}}\big] \in \mathbb{R}^{B \times 3}$$
+     $$\hat{z}_{\text{pred}} = \big[\hat{z}_{\text{area}},\, \hat{z}_{\text{delay}},\, \hat{z}_{\text{power}}\big] \in \mathbb{R}^{B \times 3}$$
    * **Target Recovery:** Each standardized scalar is un-scaled through the inverse pipeline to yield final physical units:
-     $$_\hat{y}_{\text{pred}} = \exp\big((\hat{z}_{\text{pred}} \cdot \sigma_{\text{train}}) + \mu_{\text{train}}\big) - 1$$
-
+     $$\hat{y}_{\text{pred}} = \exp\big((\hat{z}_{\text{pred}} \cdot \sigma_{\text{train}}) + \mu_{\text{train}}\big) - 1$$
+     
 ## 4. Training Configuration & Hyperparameters
 ## 5. Results & Evaluation
